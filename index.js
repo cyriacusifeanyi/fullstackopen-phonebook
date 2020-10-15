@@ -3,6 +3,7 @@ const app = express()
 var morgan = require('morgan')
 
 app.use(express.json())
+app.use(express.static('build'))
 
 // for cross origin access
 const cors = require('cors')
