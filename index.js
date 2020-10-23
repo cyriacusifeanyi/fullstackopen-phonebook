@@ -13,10 +13,7 @@ app.use(cors())
 
 // logging
 // app.use(morgan('tiny'))
-morgan.token('body', function (req, res) {
-  return (
-    JSON.stringify(req.body))
-})
+morgan.token('body', (request) => JSON.stringify(request.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms  :body '))
 
 // get all
@@ -28,9 +25,8 @@ app.get('/api/persons', (request, response) => {
 
 // show api info
 app.get('/info', (request, response) => {
-  let count = 0
   Person.countDocuments().exec((err, count) => {
-    let line1 = "<div>the phonebook has info for ".concat(count, " people</div><br />")
+    let line1 = '<div>the phonebook has info for '.concat(count, ' people</div><br />')
     let line2 = line1.concat(Date())
     response.send(line2)
   })
@@ -46,7 +42,7 @@ app.get('/api/persons/:id', (request, response) => {
 // delete one
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -64,9 +60,9 @@ app.post('/api/persons', (request, response, next) => {
     if (persons.length) {
       personExists = true
     }
-  });
+  })
 
-  if (body.name === undefined || body.name === "" || body.number === undefined || body.number === "") {
+  if (body.name === undefined || body.name === '' || body.number === undefined || body.number === '') {
     return response.status(400).json({ error: 'content missing - name and number must be specified' })
   } else if (personExists) {
     return response.status(400).json({ error: 'name already exist in phone book' })
@@ -119,6 +115,7 @@ const errorHandler = (error, request, response, next) => {
 }
 app.use(errorHandler)
 
+/*eslint-env node*/
 const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
